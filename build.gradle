@@ -15,30 +15,36 @@ configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
+	developmentOnly
+	runtimeClasspath {
+		extendsFrom developmentOnly
+	}
 }
 
 repositories {
 	mavenCentral()
+	maven {
+		url 'https://repo1.maven.org/maven2/'
+	}
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.flywaydb:flyway-core'
-	implementation 'org.flywaydb:flyway-mysql:8.2.1'
+	implementation 'org.flywaydb:flyway-mysql'
 	implementation 'me.paulschwarz:spring-dotenv:3.0.0'
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.4'
+	compileOnly "org.json:json:20211205"
 	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	runtimeOnly 'mysql:mysql-connector-java:8.0.32'
 	runtimeOnly 'com.h2database:h2'
-	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.mockito:mockito-core:4.2.0'
 	testImplementation 'org.mockito:mockito-junit-jupiter:4.2.0'
-	testCompileOnly "org.springframework.security:spring-security-test:4.2.3.RELEASE"
-
 }
 
 tasks.named('test') {
