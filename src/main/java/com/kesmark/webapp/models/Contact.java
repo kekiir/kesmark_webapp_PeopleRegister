@@ -21,6 +21,7 @@ public class Contact {
   @Column(name = "contact_type",
     columnDefinition = "ENUM('EMAIL','PHONE','OTHER')")
   private ContactType contactType;
+  private String contact;
 
   @JoinColumn(name = "address_id")
   @ManyToOne(fetch = FetchType.LAZY)

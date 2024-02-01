@@ -26,7 +26,6 @@ public class Address {
   private String line_3;
   private String city;
   private String countryProvince;
-  //@Column(name = "zip_or_post_code")
   private Integer zipOrPostcode;
   private String country;
   @Enumerated(EnumType.STRING)
