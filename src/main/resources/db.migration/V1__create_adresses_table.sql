@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS adresses
+CREATE TABLE IF NOT EXISTS addresses
 (
   address_id        INT NOT NULL AUTO_INCREMENT,
   person_id INT NOT NULL,
@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS adresses
   country_province VARCHAR(100) NOT NULL,
   zip_or_postcode INT NOT NULL,
   country VARCHAR(100) NOT NULL,
-  addres_type ENUM('PERMANENT','TEMPORARY') NOT NULL,
+  address_type ENUM('PERMANENT','TEMPORARY') NOT NULL,
   PRIMARY KEY (address_id),
   FOREIGN KEY (person_id) REFERENCES person (id)
 
