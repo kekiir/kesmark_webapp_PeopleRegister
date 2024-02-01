@@ -1,4 +1,4 @@
-package com.kesmark.webapp.models.DTOs;
+package com.kesmark.webapp.models.DTOs.errorDTOs;
 
 import lombok.*;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.kesmark.webapp.models.DTOs;
+package com.kesmark.webapp.models.DTOs.requestDTOs;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PersonDTO {
+public class PersonRequestDTO {
 
   @NotBlank(message = "firstName: First name is required.")
   private String firstName;
@@ -23,8 +23,8 @@ public class PersonDTO {
   private String familyName;
 
   @NotNull(message = "permanentAddress: Permanent address is required.")
-  private AddressDTO permanentAddress;
+  private AddressRequestDTO permanentAddress;
 
   @NotNull(message = "temporaryAddress: Temporary address is required.")
-  private AddressDTO temporaryAddress;
+  private AddressRequestDTO temporaryAddress;
 }

@@ -1,4 +1,4 @@
-package com.kesmark.webapp.models;
+package com.kesmark.webapp.models.enums;
 
 public enum ContactType {
   EMAIL,

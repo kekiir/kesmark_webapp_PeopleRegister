@@ -1,6 +1,6 @@
-package com.kesmark.webapp.models.DTOs;
+package com.kesmark.webapp.models.DTOs.requestDTOs;
 
-import com.kesmark.webapp.models.ContactType;
+import com.kesmark.webapp.models.enums.ContactType;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ContactDTO {
+public class ContactRequestDTO {
 
   @NotNull(message = "contactType: Contact type is required.")
   private ContactType contactType;

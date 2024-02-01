@@ -1,5 +1,6 @@
-package com.kesmark.webapp.models;
+package com.kesmark.webapp.models.entities;
 
+import com.kesmark.webapp.models.enums.ContactType;
 import jakarta.persistence.*;
 import lombok.*;
 

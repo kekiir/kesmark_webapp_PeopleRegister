@@ -1,7 +1,7 @@
 package com.kesmark.webapp.services;
 
-import com.kesmark.webapp.models.DTOs.ErrorDTO;
-import com.kesmark.webapp.models.DTOs.ErrorListResponseDTO;
+import com.kesmark.webapp.models.DTOs.errorDTOs.ErrorDTO;
+import com.kesmark.webapp.models.DTOs.errorDTOs.ErrorListResponseDTO;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

@@ -1,5 +1,6 @@
-package com.kesmark.webapp.models;
+package com.kesmark.webapp.models.entities;
 
+import com.kesmark.webapp.models.enums.AddressType;
 import jakarta.persistence.*;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Table;
@@ -35,7 +36,7 @@ public class Address {
 
   @OneToOne
   @JoinColumn(name = "person_id", referencedColumnName = "id")
-  private  Person person;
+  private Person person;
 
   @OneToMany(mappedBy = "address",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @Fetch(FetchMode.JOIN)

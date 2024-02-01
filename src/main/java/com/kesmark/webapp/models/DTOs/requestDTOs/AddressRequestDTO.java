@@ -1,6 +1,6 @@
-package com.kesmark.webapp.models.DTOs;
+package com.kesmark.webapp.models.DTOs.requestDTOs;
 
-import com.kesmark.webapp.models.AddressType;
+import com.kesmark.webapp.models.enums.AddressType;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AddressDTO {
+public class AddressRequestDTO {
 
   @NotBlank(message = "line1: Line 1 is required.")
   private String line1;
@@ -36,5 +36,5 @@ public class AddressDTO {
   @NotNull(message = "addressType: Address type is required.")
   private AddressType addressType;
 
-  private List<ContactDTO> contactList;
+  private List<ContactRequestDTO> contactList;
 }
