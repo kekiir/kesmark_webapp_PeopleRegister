@@ -1,7 +1,6 @@
 package com.kesmark.webapp.services;
 
-import com.kesmark.webapp.mappers.AddressMapper;
-import com.kesmark.webapp.mappers.PersonMapper;
+import com.kesmark.webapp.mappers.*;
 import com.kesmark.webapp.models.DTOs.requestDTOs.*;
 import com.kesmark.webapp.models.DTOs.responseDTOs.PersonResponseDTO;
 import com.kesmark.webapp.models.entities.*;
@@ -10,10 +9,10 @@ import com.kesmark.webapp.models.enums.AddressType;
 import com.kesmark.webapp.models.enums.ContactType;
 import com.kesmark.webapp.repositories.*;
 import lombok.AllArgsConstructor;
-import lombok.Value;
-import org.apache.commons.lang3.ObjectUtils;
+
 import org.springframework.stereotype.Service;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -24,6 +23,7 @@ public class PersonServiceImp implements PersoneService {
   public ContactRepository contactRepository;
   private PersonMapper personMapper;
   private AddressMapper addressMapper;
+  private ContactMapper contactMapper;
 
   @Override
   public PersonResponseDTO createPerson(PersonRequestDTO personRequestDTO) {
@@ -36,7 +36,7 @@ public class PersonServiceImp implements PersoneService {
     newPerson.setFamilyName(personRequestDTO.getFamilyName());
     personRepository.save(newPerson);
 
-    saveAddreses (newPerson, personRequestDTO);
+    saveAddreses(newPerson, personRequestDTO);
 
     return personMapper.mapToResponseDTO(personRepository.save(newPerson));
   }
@@ -47,17 +47,17 @@ public class PersonServiceImp implements PersoneService {
 
     addressRepository.save(newAddress1);
     addressRepository.save(newAddress0);
-    saveContacts(newAddress0,newAddress1);
+    saveContacts(newAddress0, newAddress1);
     newPerson.getAddressList().add(newAddress0);
     newPerson.getAddressList().add(newAddress1);
   }
 
   private void saveContacts(Address newAddress0, Address newAddress1) {
-   for (Contact contact: newAddress0.getContactList() ) {
-       contact.setAddress(newAddress0);
-       contactRepository.save(contact);
-   }
-    for (Contact contact: newAddress1.getContactList() ) {
+    for (Contact contact : newAddress0.getContactList()) {
+      contact.setAddress(newAddress0);
+      contactRepository.save(contact);
+    }
+    for (Contact contact : newAddress1.getContactList()) {
       contact.setAddress(newAddress1);
       contactRepository.save(contact);
     }
@@ -80,11 +80,9 @@ public class PersonServiceImp implements PersoneService {
     if (optionalPerson.isEmpty()) {
       throw new IdNotFoundException();
     }
-
     Person person = optionalPerson.get();
     updatePersonFromRequest(person, personRequestDTO);
 
-    // Save the updated person entity
     Person updatedPerson = personRepository.save(person);
 
     return personMapper.mapToResponseDTO(updatedPerson);
@@ -96,10 +94,25 @@ public class PersonServiceImp implements PersoneService {
     person.setFamilyName(personRequestDTO.getFamilyName());
 
     for (int i = 0; i < 2; i++) {
-      updateAddress(person.getAddressList().get(i), personRequestDTO.getAddressList().get(i));
+      if (personRequestDTO.getAddressList().get(i) != null) {
+        updateAddress(person.getAddressList().get(i), personRequestDTO.getAddressList().get(i));
+      }
+      List<Contact> updatedContactList = updateContactList(personRequestDTO, person, i);
+
+      person.getAddressList().get(i).setContactList(updatedContactList);
+
+      addressRepository.save(person.getAddressList().get(0));
     }
 
     personRepository.save(person);
+  }
+
+  private List<Contact> updateContactList(PersonRequestDTO personRequestDTO, Person person, int i) {
+
+    return personRequestDTO.getAddressList().get(i).getContactList()
+      .stream()
+      .map(c -> contactMapper.mapToEntity(c, person.getAddressList().get(i)))
+      .collect(Collectors.toList());
   }
 
   private void updateAddress(Address address, AddressRequestDTO addressRequestDTO) {
@@ -112,6 +125,7 @@ public class PersonServiceImp implements PersoneService {
       address.setZipOrPostcode(addressRequestDTO.getZipOrPostcode());
       address.setAddressType(AddressType.valueOf(addressRequestDTO.getAddressType()));
       address.setCountry(addressRequestDTO.getCountry());
+
     }
   }
 
