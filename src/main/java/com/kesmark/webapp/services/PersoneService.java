@@ -6,4 +6,7 @@ import com.kesmark.webapp.models.DTOs.responseDTOs.PersonResponseDTO;
 public interface PersoneService {
 
   PersonResponseDTO createPerson( PersonRequestDTO personRequestDTO);
+
+  Object findPersonByID(Integer id);
+
 }

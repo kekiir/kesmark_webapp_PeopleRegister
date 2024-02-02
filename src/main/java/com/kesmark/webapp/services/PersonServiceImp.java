@@ -4,14 +4,14 @@ import com.kesmark.webapp.mappers.PersonMapper;
 import com.kesmark.webapp.models.DTOs.requestDTOs.ContactRequestDTO;
 import com.kesmark.webapp.models.DTOs.requestDTOs.PersonRequestDTO;
 import com.kesmark.webapp.models.DTOs.responseDTOs.PersonResponseDTO;
-import com.kesmark.webapp.models.exceptions.InvalidAddresTypeException;
-import com.kesmark.webapp.models.exceptions.InvalidContactTypeException;
+import com.kesmark.webapp.models.exceptions.*;
 import com.kesmark.webapp.models.entities.Person;
 import com.kesmark.webapp.models.enums.AddressType;
 import com.kesmark.webapp.models.enums.ContactType;
 import com.kesmark.webapp.repositories.PersonRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -31,6 +31,15 @@ public class PersonServiceImp implements PersoneService {
     Person newPerson = setPersonVariables (personRequestDTO);
 
     return personMapper.mapToResponseDTO(personRepository.save(newPerson));
+  }
+
+  @Override
+  public Object findPersonByID(Integer id) throws IdNotFoundException {
+
+    Optional <Person> person = personRepository.findById(id);
+    if (person.isEmpty()) throw new IdNotFoundException();
+
+    return personMapper.mapToResponseDTO(person.get());
   }
 
   private Person setPersonVariables(PersonRequestDTO personRequestDTO) {
