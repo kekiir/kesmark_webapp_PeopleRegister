@@ -1,5 +1,6 @@
 package com.kesmark.webapp.services;
 
+import com.kesmark.webapp.mappers.AddressMapper;
 import com.kesmark.webapp.mappers.PersonMapper;
 import com.kesmark.webapp.models.DTOs.requestDTOs.*;
 import com.kesmark.webapp.models.DTOs.responseDTOs.PersonResponseDTO;
@@ -9,11 +10,10 @@ import com.kesmark.webapp.models.enums.AddressType;
 import com.kesmark.webapp.models.enums.ContactType;
 import com.kesmark.webapp.repositories.*;
 import lombok.AllArgsConstructor;
+import lombok.Value;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
-import java.lang.reflect.Field;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -21,18 +21,28 @@ public class PersonServiceImp implements PersoneService {
 
   private PersonRepository personRepository;
   private AddressRepository addressRepository;
-  private ContactRepository contactRepository;
+  public ContactRepository contactRepository;
   private PersonMapper personMapper;
+  private AddressMapper addressMapper;
 
   @Override
   public PersonResponseDTO createPerson(PersonRequestDTO personRequestDTO) {
-    checkCorrectAddresType(personRequestDTO.getPermanentAddress().getAddressType().toString());
+    checkCorrectAddresType(personRequestDTO);
     checkContacTypes(personRequestDTO);
-    if (personRequestDTO.getTemporaryAddress() != null) {
-      checkCorrectAddresType(personRequestDTO.getTemporaryAddress().getAddressType().toString());
-    }
 
-    Person newPerson = personMapper.mapToEntity(personRequestDTO);
+    Person newPerson = new Person();
+    newPerson.setFirstName(personRequestDTO.getFirstName());
+    newPerson.setMiddleName(personRequestDTO.getMiddleName());
+    newPerson.setFamilyName(personRequestDTO.getFamilyName());
+    personRepository.save(newPerson);
+
+    Address newAddress0 = addressMapper.mapToEntity(personRequestDTO.getAddressList().get(0), newPerson);
+    Address newAddress1 = addressMapper.mapToEntity(personRequestDTO.getAddressList().get(1), newPerson);
+    addressRepository.save(newAddress1);
+    addressRepository.save(newAddress0);
+    newPerson.getAddressList().add(newAddress0);
+    newPerson.getAddressList().add(newAddress1);
+
 
     return personMapper.mapToResponseDTO(personRepository.save(newPerson));
   }
@@ -49,71 +59,65 @@ public class PersonServiceImp implements PersoneService {
 
   @Override
   public Object updatePersonByID(Integer id, PersonRequestDTO personRequestDTO) {
-    Optional<Person> person = personRepository.findById(id);
-    if (person.isEmpty())
+    Optional<Person> optionalPerson = personRepository.findById(id);
+    if (optionalPerson.isEmpty()) {
       throw new IdNotFoundException();
-    updatePersonFromRequest(person.get(), personRequestDTO);
-    personRepository.save(person.get());
+    }
 
-    return personMapper.mapToResponseDTO(personRepository.save(person.get()));
+    Person person = optionalPerson.get();
+    updatePersonFromRequest(person, personRequestDTO);
+
+    // Save the updated person entity
+    Person updatedPerson = personRepository.save(person);
+
+    return personMapper.mapToResponseDTO(updatedPerson);
   }
 
-  public static void updatePersonFromRequest(Person person, PersonRequestDTO personRequestDTO) {
+  private void updatePersonFromRequest(Person person, PersonRequestDTO personRequestDTO) {
     person.setFirstName(personRequestDTO.getFirstName());
     person.setMiddleName(personRequestDTO.getMiddleName());
     person.setFamilyName(personRequestDTO.getFamilyName());
 
-    updateAddressFromRequest(person.getPermanentAddress(), personRequestDTO.getPermanentAddress());
-    if (personRequestDTO.getTemporaryAddress() != null) {
-      updateAddressFromRequest(person.getTemporaryAddress(), personRequestDTO.getTemporaryAddress());
+    for (int i = 0; i < 2; i++) {
+      updateAddress(person.getAddressList().get(i), personRequestDTO.getAddressList().get(i));
     }
 
+    personRepository.save(person);
   }
 
-  public static void updateAddressFromRequest(Address address, AddressRequestDTO addressRequestDTO) {
-    address.setLine_1(addressRequestDTO.getLine1());
-    address.setLine_2(addressRequestDTO.getLine2());
-    address.setLine_3(addressRequestDTO.getLine3());
-    address.setCity(addressRequestDTO.getCity());
-    address.setCountryProvince(addressRequestDTO.getCountryProvince());
-    address.setZipOrPostcode(addressRequestDTO.getZipOrPostcode());
-    address.setCountry(addressRequestDTO.getCountry());
-    address.setAddressType(AddressType.valueOf(addressRequestDTO.getAddressType()));
-
-    // Update contact list if it's not null
-    if (addressRequestDTO.getContactList() != null) {
-      List<Contact> existingContacts = address.getContactList();
-      List<ContactRequestDTO> updatedContactDTOs = addressRequestDTO.getContactList();
-
-      for (int i = 0; i < Math.min(existingContacts.size(), updatedContactDTOs.size()); i++) {
-        Contact existingContact = existingContacts.get(i);
-        ContactRequestDTO updatedContactDTO = updatedContactDTOs.get(i);
-
-        // Update properties of existing contact with corresponding values from DTO
-        existingContact.setContactType(ContactType.valueOf(updatedContactDTO.getContactType()));
-        existingContact.setContact(updatedContactDTO.getContact());
-        // Set other properties as needed
-
-      }
+  private void updateAddress(Address address, AddressRequestDTO addressRequestDTO) {
+    if (addressRequestDTO != null) {
+      address.setLine_1(addressRequestDTO.getLine1());
+      address.setLine_2(addressRequestDTO.getLine2());
+      address.setLine_3(addressRequestDTO.getLine3());
+      address.setCity(addressRequestDTO.getCity());
+      address.setCountryProvince(addressRequestDTO.getCountryProvince());
+      address.setZipOrPostcode(addressRequestDTO.getZipOrPostcode());
+      address.setAddressType(AddressType.valueOf(addressRequestDTO.getAddressType()));
+      address.setCountry(addressRequestDTO.getCountry());
     }
   }
 
-  public void checkCorrectAddresType(String addresType) throws InvalidAddresTypeException {
+  public void checkCorrectAddresType(PersonRequestDTO personRequestDTO) throws InvalidAddresTypeException {
     try {
-      AddressType.valueOf(addresType);
+
+      for (AddressRequestDTO addressRequestDTO : personRequestDTO.getAddressList()) {
+        AddressType.valueOf(addressRequestDTO.getAddressType());
+      }
     } catch (IllegalArgumentException e) {
       throw new InvalidAddresTypeException();
     }
   }
 
   public void checkContacTypes(PersonRequestDTO personRequestDTO) throws InvalidContactTypeException {
-    for (ContactRequestDTO contact : personRequestDTO.getPermanentAddress().getContactList()) {
-      checkCorrectContactType(contact.getContactType().toString());
+
+    for (AddressRequestDTO addressRequestDTO : personRequestDTO.getAddressList()) {
+      for (ContactRequestDTO contactRequestDTO : addressRequestDTO.getContactList()) {
+        checkCorrectContactType(contactRequestDTO.getContactType());
+      }
+
     }
 
-    for (ContactRequestDTO contact : personRequestDTO.getTemporaryAddress().getContactList()) {
-      checkCorrectContactType(contact.getContactType().toString());
-    }
   }
 
   public void checkCorrectContactType(String contactType) throws InvalidContactTypeException {

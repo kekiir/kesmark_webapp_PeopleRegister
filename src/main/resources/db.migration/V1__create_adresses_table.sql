@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS addresses
   country_province VARCHAR(100) NOT NULL,
   zip_or_postcode INT NOT NULL,
   country VARCHAR(100) NOT NULL,
-  address_type ENUM('PERMANENT','TEMPORARY') NOT NULL,
+  address_type ENUM('PERMANENT','TEMPORARY'),
   PRIMARY KEY (address_id),
   FOREIGN KEY (person_id) REFERENCES person (id)
 

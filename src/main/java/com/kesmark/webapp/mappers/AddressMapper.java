@@ -17,6 +17,7 @@ public class AddressMapper {
 
   public Address mapToEntity(AddressRequestDTO addressRequestDTO, Person person) {
     Address address = new Address();
+
     address.setLine_1(addressRequestDTO.getLine1());
     address.setLine_2(addressRequestDTO.getLine2());
     address.setLine_3(addressRequestDTO.getLine3());
@@ -25,6 +26,7 @@ public class AddressMapper {
     address.setZipOrPostcode(addressRequestDTO.getZipOrPostcode());
     address.setCountry(addressRequestDTO.getCountry());
     address.setAddressType(AddressType.valueOf(addressRequestDTO.getAddressType()));
+
     if (addressRequestDTO.getContactList() != null) {
       address.setContactList(addressRequestDTO.getContactList().stream()
         .map(c -> contactMapper.mapToEntity(c,address))
@@ -45,7 +47,7 @@ public class AddressMapper {
       addressResponseDTO.setZipOrPostcode(address.getZipOrPostcode());
       addressResponseDTO.setCountry(address.getCountry());
       addressResponseDTO.setAddressType(address.getAddressType());
-      // Map contactList if it exists
+
       if (address.getContactList() != null) {
         addressResponseDTO.setContactList(address.getContactList().stream()
           .map(contactMapper::mapToResponseDTO)

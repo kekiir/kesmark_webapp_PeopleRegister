@@ -1,5 +1,6 @@
 package com.kesmark.webapp.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kesmark.webapp.models.enums.ContactType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,6 +25,7 @@ public class Contact {
   private ContactType contactType;
   private String contact;
 
+  @JsonIgnore
   @JoinColumn(name = "address_id")
   @ManyToOne(fetch = FetchType.LAZY)
   private Address address;

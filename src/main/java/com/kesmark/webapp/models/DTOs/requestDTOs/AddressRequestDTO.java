@@ -17,9 +17,9 @@ public class AddressRequestDTO {
 
   @NotBlank(message = "line1: Line 1 is required.")
   private String line1;
-  @NotBlank(message = "line1: Line 1 is required.")
+  @NotBlank(message = "line1: Line 2 is required.")
   private String line2;
-  @NotBlank(message = "line1: Line 1 is required.")
+  @NotBlank(message = "line1: Line 3 is required.")
   private String line3;
 
   @NotBlank(message = "city: City is required.")
