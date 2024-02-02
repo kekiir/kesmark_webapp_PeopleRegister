@@ -17,5 +17,5 @@ public class ContactRequestDTO {
   private ContactType contactType;
 
   @NotNull(message = "contact: Contact type is required.")
-  private ContactType contact;
+  private String contact;
 }

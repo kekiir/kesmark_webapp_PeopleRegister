@@ -29,9 +29,7 @@ public class PersonServiceImp implements PersoneService {
     }
     Person newPerson = setPersonVariables (personRequestDTO);
 
-
-
-    return null;
+    return personMapper.mapToResponseDTO(personRepository.save(newPerson));
   }
 
   private Person setPersonVariables(PersonRequestDTO personRequestDTO) {

@@ -18,7 +18,7 @@ public class PersonController {
 
   private PersoneService personService;
 
-  @PostMapping
+  @PostMapping(path = "/person")
   public ResponseEntity<?> createPerson(@Valid @RequestBody PersonRequestDTO personRequestDTO) {
 
     try {
