@@ -1,6 +1,5 @@
 package com.kesmark.webapp.models.entities;
 
-import com.kesmark.webapp.models.entities.Address;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,9 +20,9 @@ public class Person {
   private String familyName;
 
   @OneToOne(mappedBy = "person", cascade = CascadeType.ALL)
-  private Address permanentAdress;
+  private Address permanentAddress;
 
   @OneToOne(mappedBy = "person", cascade = CascadeType.ALL)
-  private Address temporaryAdress;
+  private Address temporaryAddress;
 
 }

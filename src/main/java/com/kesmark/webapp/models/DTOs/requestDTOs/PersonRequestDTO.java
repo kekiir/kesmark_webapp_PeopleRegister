@@ -25,6 +25,5 @@ public class PersonRequestDTO {
   @NotNull(message = "permanentAddress: Permanent address is required.")
   private AddressRequestDTO permanentAddress;
 
-  @NotNull(message = "temporaryAddress: Temporary address is required.")
   private AddressRequestDTO temporaryAddress;
 }
