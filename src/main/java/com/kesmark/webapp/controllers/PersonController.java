@@ -48,4 +48,23 @@ public class PersonController {
     }
   }
 
+
+  @PutMapping("/person/{idString}")
+  public ResponseEntity<?> createPerson(@Valid @RequestBody PersonRequestDTO person,
+    @PathVariable String idString) {
+
+    Integer id;
+    try {
+      id = Integer.parseInt(idString);
+    } catch (NumberFormatException e) {
+      return ResponseEntity.status(406).body(new ErrorDTO("Id must be an integer"));
+    }
+    try {
+      return ResponseEntity.ok().body(personService.updatePersonByID(id, person));
+    } catch (IdNotFoundException e) {
+      return ResponseEntity.status(406).body(new ErrorDTO(e.getMessage()));
+    }
+
+  }
+
 }

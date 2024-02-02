@@ -9,4 +9,6 @@ public interface PersoneService {
 
   Object findPersonByID(Integer id);
 
+  Object updatePersonByID(Integer id, PersonRequestDTO personRequestDTO);
+
 }
