@@ -36,15 +36,32 @@ public class PersonServiceImp implements PersoneService {
     newPerson.setFamilyName(personRequestDTO.getFamilyName());
     personRepository.save(newPerson);
 
-    Address newAddress0 = addressMapper.mapToEntity(personRequestDTO.getAddressList().get(0), newPerson);
-    Address newAddress1 = addressMapper.mapToEntity(personRequestDTO.getAddressList().get(1), newPerson);
-    addressRepository.save(newAddress1);
-    addressRepository.save(newAddress0);
-    newPerson.getAddressList().add(newAddress0);
-    newPerson.getAddressList().add(newAddress1);
-
+    saveAddreses (newPerson, personRequestDTO);
 
     return personMapper.mapToResponseDTO(personRepository.save(newPerson));
+  }
+
+  private void saveAddreses(Person newPerson, PersonRequestDTO personRequestDTO) {
+    Address newAddress0 = addressMapper.mapToEntity(personRequestDTO.getAddressList().get(0), newPerson);
+    Address newAddress1 = addressMapper.mapToEntity(personRequestDTO.getAddressList().get(1), newPerson);
+
+    addressRepository.save(newAddress1);
+    addressRepository.save(newAddress0);
+    saveContacts(newAddress0,newAddress1);
+    newPerson.getAddressList().add(newAddress0);
+    newPerson.getAddressList().add(newAddress1);
+  }
+
+  private void saveContacts(Address newAddress0, Address newAddress1) {
+   for (Contact contact: newAddress0.getContactList() ) {
+       contact.setAddress(newAddress0);
+       contactRepository.save(contact);
+   }
+    for (Contact contact: newAddress1.getContactList() ) {
+      contact.setAddress(newAddress1);
+      contactRepository.save(contact);
+    }
+
   }
 
   @Override
