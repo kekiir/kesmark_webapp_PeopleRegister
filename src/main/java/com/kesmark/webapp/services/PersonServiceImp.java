@@ -25,6 +25,7 @@ public class PersonServiceImp implements PersoneService {
   private AddressMapper addressMapper;
   private ContactMapper contactMapper;
 
+
   @Override
   public PersonResponseDTO createPerson(PersonRequestDTO personRequestDTO) {
     checkCorrectAddresType(personRequestDTO);
@@ -86,6 +87,27 @@ public class PersonServiceImp implements PersoneService {
     Person updatedPerson = personRepository.save(person);
 
     return personMapper.mapToResponseDTO(updatedPerson);
+  }
+
+  @Override
+  public void deletePersoneById(Integer id) {
+    Optional<Person> optionalPerson = personRepository.findById(id);
+    if (optionalPerson.isEmpty()) {
+      throw new IdNotFoundException();
+    }
+    Person person = optionalPerson.get();
+
+    deleteContacts(person);
+    addressRepository.deleteAll(person.getAddressList());
+    personRepository.deleteById(id);
+  }
+
+  private void deleteContacts(Person person) {
+    for (Address address : person.getAddressList()) {
+      for (Contact contact : address.getContactList()) {
+        contactRepository.delete(contact);
+      }
+    }
   }
 
   private void updatePersonFromRequest(Person person, PersonRequestDTO personRequestDTO) {

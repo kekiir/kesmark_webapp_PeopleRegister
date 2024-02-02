@@ -50,7 +50,7 @@ public class PersonController {
 
 
   @PutMapping("/person/{idString}")
-  public ResponseEntity<?> createPerson(@Valid @RequestBody PersonRequestDTO person,
+  public ResponseEntity<?> updatePerson(@Valid @RequestBody PersonRequestDTO person,
     @PathVariable String idString) {
 
     Integer id;
@@ -67,4 +67,21 @@ public class PersonController {
 
   }
 
+  @DeleteMapping("/person/{idString}")
+  public ResponseEntity<?> deletePersonById(@PathVariable String idString){
+
+    Integer id;
+    try {
+      id = Integer.parseInt(idString);
+    } catch (NumberFormatException e) {
+      return ResponseEntity.status(406).body(new ErrorDTO("Id must be an integer"));
+    }
+    try {
+      personService.deletePersoneById(id);
+      return ResponseEntity.ok().body("Person with id " + id + " has been succesfully deleted .");
+    } catch (IdNotFoundException e) {
+      return ResponseEntity.status(406).body(new ErrorDTO(e.getMessage()));
+    }
+
+  }
 }

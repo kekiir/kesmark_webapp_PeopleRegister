@@ -11,4 +11,6 @@ public interface PersoneService {
 
   Object updatePersonByID(Integer id, PersonRequestDTO personRequestDTO);
 
+  void deletePersoneById(Integer id);
+
 }
