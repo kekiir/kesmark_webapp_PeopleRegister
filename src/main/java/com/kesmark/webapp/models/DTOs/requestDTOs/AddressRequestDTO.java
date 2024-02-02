@@ -36,7 +36,7 @@ public class AddressRequestDTO {
   private String country;
 
   @NotNull(message = "addressType: Address type is required.")
-  private AddressType addressType;
+  private String addressType;
 
   @Valid
   private List<ContactRequestDTO> contactList;

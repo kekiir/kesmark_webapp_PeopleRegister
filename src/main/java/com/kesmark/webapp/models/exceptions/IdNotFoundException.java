@@ -1,4 +1,4 @@
-package com.kesmark.webapp.models.Exceptions;
+package com.kesmark.webapp.models.exceptions;
 
 public class IdNotFoundException extends RuntimeException {
 

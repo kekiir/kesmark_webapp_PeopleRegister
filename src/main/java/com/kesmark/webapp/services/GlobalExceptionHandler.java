@@ -2,6 +2,8 @@ package com.kesmark.webapp.services;
 
 import com.kesmark.webapp.models.DTOs.errorDTOs.ErrorDTO;
 import com.kesmark.webapp.models.DTOs.errorDTOs.ErrorListResponseDTO;
+import com.kesmark.webapp.models.exceptions.InvalidAddresTypeException;
+import com.kesmark.webapp.models.exceptions.InvalidContactTypeException;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -40,5 +42,23 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     return new ResponseEntity<>(errorDTO, HttpStatus.BAD_REQUEST);
   }
+
+
+  @ExceptionHandler(InvalidAddresTypeException.class)
+  @ApiResponse(responseCode = "401", description = "Invalid addres type. Valid types: PERMANENT or TEMPORARY",
+    content = @Content(schema = @Schema(implementation = ErrorDTO.class)))
+  public ResponseEntity<ErrorDTO> handleInvalidAddressTypeException(InvalidAddresTypeException ex) {
+    ErrorDTO errorDTO = new ErrorDTO(ex.getMessage());
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorDTO);
+  }
+
+  @ExceptionHandler(InvalidContactTypeException.class)
+  @ApiResponse(responseCode = "401", description = "Invalid contact type. Valid types: PHONE, EMAIL, OTHER",
+    content = @Content(schema = @Schema(implementation = ErrorDTO.class)))
+  public ResponseEntity<ErrorDTO> handleInvalidContactTypeException(InvalidContactTypeException ex) {
+    ErrorDTO errorDTO = new ErrorDTO(ex.getMessage());
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorDTO);
+  }
+
 
 }

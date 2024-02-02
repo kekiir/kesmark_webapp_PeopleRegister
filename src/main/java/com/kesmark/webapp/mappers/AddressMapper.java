@@ -4,6 +4,7 @@ import com.kesmark.webapp.models.DTOs.requestDTOs.AddressRequestDTO;
 import com.kesmark.webapp.models.DTOs.responseDTOs.AddressResponseDTO;
 import com.kesmark.webapp.models.entities.Address;
 import com.kesmark.webapp.models.entities.Person;
+import com.kesmark.webapp.models.enums.AddressType;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import java.util.stream.Collectors;
@@ -23,7 +24,7 @@ public class AddressMapper {
     address.setCountryProvince(addressRequestDTO.getCountryProvince());
     address.setZipOrPostcode(addressRequestDTO.getZipOrPostcode());
     address.setCountry(addressRequestDTO.getCountry());
-    address.setAddressType(addressRequestDTO.getAddressType());
+    address.setAddressType(AddressType.valueOf(addressRequestDTO.getAddressType()));
     if (addressRequestDTO.getContactList() != null) {
       address.setContactList(addressRequestDTO.getContactList().stream()
         .map(c -> contactMapper.mapToEntity(c,address))

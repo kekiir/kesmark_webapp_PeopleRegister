@@ -17,7 +17,7 @@ public class PersonRequestDTO {
 
   @NotBlank(message = "firstName: First name is required.")
   private String firstName;
-
+  @NotNull(message = "middleName: Middle name can not be null.")
   private String middleName;
 
   @NotBlank(message = "familyName: Family name is required.")

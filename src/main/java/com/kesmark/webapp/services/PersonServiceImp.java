@@ -4,9 +4,8 @@ import com.kesmark.webapp.mappers.PersonMapper;
 import com.kesmark.webapp.models.DTOs.requestDTOs.ContactRequestDTO;
 import com.kesmark.webapp.models.DTOs.requestDTOs.PersonRequestDTO;
 import com.kesmark.webapp.models.DTOs.responseDTOs.PersonResponseDTO;
-import com.kesmark.webapp.models.Exceptions.InvalidAddresTypeException;
-import com.kesmark.webapp.models.Exceptions.InvalidContactTypeException;
-import com.kesmark.webapp.models.entities.Contact;
+import com.kesmark.webapp.models.exceptions.InvalidAddresTypeException;
+import com.kesmark.webapp.models.exceptions.InvalidContactTypeException;
 import com.kesmark.webapp.models.entities.Person;
 import com.kesmark.webapp.models.enums.AddressType;
 import com.kesmark.webapp.models.enums.ContactType;
@@ -24,9 +23,11 @@ public class PersonServiceImp implements PersoneService {
   @Override
   public PersonResponseDTO createPerson(PersonRequestDTO personRequestDTO) {
     checkCorrectAddresType(personRequestDTO.getPermanentAddress().getAddressType().toString());
+    checkContacTypes(personRequestDTO);
     if (personRequestDTO.getTemporaryAddress() != null) {
       checkCorrectAddresType(personRequestDTO.getTemporaryAddress().getAddressType().toString());
     }
+
     Person newPerson = setPersonVariables (personRequestDTO);
 
     return personMapper.mapToResponseDTO(personRepository.save(newPerson));

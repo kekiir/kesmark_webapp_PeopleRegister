@@ -14,8 +14,9 @@ import lombok.NoArgsConstructor;
 public class ContactRequestDTO {
 
   @NotNull(message = "contactType: Contact type is required.")
-  private ContactType contactType;
+  private String contactType;
 
   @NotNull(message = "contact: Contact type is required.")
   private String contact;
+
 }
